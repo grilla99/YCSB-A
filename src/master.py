@@ -169,7 +169,7 @@ class Master:
         data = "get_log" + " " + str(lines)
         self.__send_message_to_all(data)
 
-    def __ddos(self, input_msg: list): # Example "run <db-connection-url>"
+    def __ddos(self, input_msg: list):
         connection_url = input_msg[1]  # Example "ddos 192.168.2.159 2019-11-10 19:52:28"
         date = input_msg[2].split("-")  # Split msg[2] with "-" separator into date[0->2]
         hour = input_msg[3].split(":")  # Split msg[3] with ":" separator into hour[0->2]
@@ -198,7 +198,11 @@ class Master:
         print("  - stop : Stop log recording on all connected workers.")
         print("  - get <lines> : Ask to workers to send the last <lines> of log file.")
         print(
-            "  - run <connection-url> <yyyy/mm/dd> <hh:mm:ss> : Ask to all workers to HTTP request <connection-url> on <date> at <time>.")
+            "  - ddos <address> <date-url> <hh:mm:ss> : Ask to all workers to HTTP request <connection-url> on <date> at <time>.")
+        print(" "
+              "  - load <mongodb>|<cassandra> -s -P workloads/workload<X> > outputLoad.txt")
+        print("  "
+              "- run <mongodb>|<cassandra> -s -P workloads/workload<X> > outputRun.txt")
         print("  - help : Print this help menu.")
         print("  - worker : Print addresses of connected workers.")
         print("  - attack : Print planed attack.")
