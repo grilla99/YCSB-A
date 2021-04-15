@@ -1,2 +1,2 @@
-13-04-21 15:16:53 MainThread        INFO    - Master node started
-13-04-21 15:22:45 MainThread        INFO    - Exiting master...
+15-04-21 10:18:20 MainThread        INFO    - Master node started
+15-04-21 10:18:37 WaitingConnection INFO    - New worker connected : 127.0.0.1:56636.

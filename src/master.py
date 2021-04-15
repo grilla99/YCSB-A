@@ -41,7 +41,7 @@ class Master:
         self.listening_message.start()
 
         while not self.stop:
-            time.sleep(10)
+            time.sleep(20)
             print(f"Awaiting ready confirmation. {self.workers_connected} connected to master. ")
             raw_input = input()
             if raw_input != '':
@@ -75,6 +75,13 @@ class Master:
                         self.__print_connected_worker()
                     else:
                         print(f"[{now.hour}:{now.minute}] Too many arguments : Try like this 'worker'.")
+
+                elif split_input[0] == "load":
+                    if len_msg == 5:
+                        self.__load(split_input)
+                    else:
+                        print(f"[{now.hour}:{now.minute}] Too many arguments : Try like this 'run <database>"
+                              f" <workloads/workload<X>> > outputFile ")
 
                 elif split_input[0] == "exit":  # #### EXIT #####
                     if len_msg == 1:
@@ -190,6 +197,22 @@ class Master:
         else:
             print(">> Bad format!")
 
+    #TODO: Add the -s -P -p on client side, -s reports status, -P loads property files and -p is params
+    def __load(self, input_msg: list):
+        database = input_msg[1]  # Example "load mongodb workloads/workloada > outputLoad.txt"
+        workload_string = input_msg[2]
+        output_file = input_msg[4]
+
+        #TODO: add checking for validity of strings here
+        if len(input_msg) == 5:
+            try:
+                data = "load" + " " + database + " " + "-s -P" + " " + workload_string + " > " + output_file
+                self.__send_message_to_all(data)
+            except ValueError:
+                print("No such database (needs to be changed)")
+        else:
+            print(">> Bad format!")
+
     @classmethod
     def __print_help(cls):
         print(
@@ -200,9 +223,9 @@ class Master:
         print(
             "  - ddos <address> <date-url> <hh:mm:ss> : Ask to all workers to HTTP request <connection-url> on <date> at <time>.")
         print(" "
-              "  - load <mongodb>|<cassandra> -s -P workloads/workload<X> > outputLoad.txt")
+              "  - load <mongodb>|<cassandra> workloads/workload<X> > outputLoad.txt")
         print("  "
-              "- run <mongodb>|<cassandra> -s -P workloads/workload<X> > outputRun.txt")
+              "  - run <mongodb>|<cassandra> -s -P workloads/workload<X> > outputRun.txt")
         print("  - help : Print this help menu.")
         print("  - worker : Print addresses of connected workers.")
         print("  - attack : Print planed attack.")
