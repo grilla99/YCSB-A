@@ -9,6 +9,7 @@ from re import findall
 from uuid import getnode
 from psutil import cpu_count, virtual_memory
 from os import remove
+import subprocess
 from requests import get
 from requests.exceptions import ConnectionError
 
@@ -45,6 +46,10 @@ class Slave:
                     elif len_msg == 2:
                         if msg[0] == "get_log":  # If msg is only "get_log" + arg (arg must be int!!!)
                             self.__get_log(int(msg[1]))
+                    elif len_msg == 7:
+                        if msg[0] == "load":  # If msg is a load operation, will load database with
+                            self.__load_data(msg)
+
 
                 except ConnectionResetError:
                     print("/!\\ Disconnected...")
@@ -132,6 +137,11 @@ class Slave:
             return ret, nbr_lines
         except FileNotFoundError:
             return None
+
+    def __load_data(self, data:list):
+        # Shell = True can be a security hazard if combined with untrusted input
+        output = subprocess.call("./ycsb_script.sh", shell=True)
+        print(output)
 
     @classmethod
     def __get_sys_info(cls):

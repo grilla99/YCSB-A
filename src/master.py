@@ -80,7 +80,7 @@ class Master:
                     if len_msg == 5:
                         self.__load(split_input)
                     else:
-                        print(f"[{now.hour}:{now.minute}] Too many arguments : Try like this 'run <database>"
+                        print(f"[{now.hour}:{now.minute}] Too many arguments : Try like this 'load <database>"
                               f" <workloads/workload<X>> > outputFile ")
 
                 elif split_input[0] == "exit":  # #### EXIT #####
