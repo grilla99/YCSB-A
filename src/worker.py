@@ -140,8 +140,19 @@ class Slave:
 
     def __load_data(self, data:list):
         # Shell = True can be a security hazard if combined with untrusted input
-        output = subprocess.call("./ycsb_script.sh", shell=True)
-        print(output)
+        has_ycsb = subprocess.call("./ycsb_script.sh", shell=True)
+        if has_ycsb == 1:
+            operation = data[0]
+            database = data[1]
+            run_param = data[2]
+            additional_param = data[3]
+            workload_data = data[4] + " > " + data[6]
+            run = subprocess.call(["../YCSB-master/bin/ycsb",
+                                  operation, database, run_param, additional_param, workload_data])
+        elif has_ycsb == 0:  # If the node doesn't have YCSB installed, issue error message and exit
+            print(f"Node {self.address}:{self.port} does not have YCSB installed.")
+            print("\n Disconnecting... ")
+            self.__exit()
 
     @classmethod
     def __get_sys_info(cls):

@@ -4,6 +4,8 @@ FILE=./ycsb.config
 
 if [ -f "$FILE" ]; then
 	echo  "Client X has YCSB installed"
+	exit 1 # True
 else 
 	echo "Client X does not have YCSB installed. Removing node..."
+	exit 0
 fi

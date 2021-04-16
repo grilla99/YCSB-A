@@ -23,7 +23,6 @@ class Master:
         self.waiting_connection = Thread(target=self.__waiting_for_connection, name="WaitingConnection")
         self.listening_message = Thread(target=self.__listening_message, name="ListeningMessage")
 
-
     def start(self):
         logging.basicConfig(
             filename=self.log_file,
