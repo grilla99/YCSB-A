@@ -146,9 +146,13 @@ class Slave:
             database = data[1]
             run_param = data[2]
             additional_param = data[3]
-            workload_data = data[4] + " > " + data[6]
-            run = subprocess.call(["../YCSB-master/bin/ycsb",
-                                  operation, database, run_param, additional_param, workload_data])
+            workload_data = data[4]
+            connection_string = " mongodb.url=mongodb://localhost:27017/ycsb?w=0"
+            run = subprocess.call(["../ycsb-0.17.0/bin/ycsb",
+                                  operation, database, run_param, additional_param, "../ycsb-0.17.0/" + workload_data,
+                                   "-p", connection_string])
+
+            print(" contents of run : ", run)
         elif has_ycsb == 0:  # If the node doesn't have YCSB installed, issue error message and exit
             print(f"Node {self.address}:{self.port} does not have YCSB installed.")
             print("\n Disconnecting... ")
