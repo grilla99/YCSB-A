@@ -158,6 +158,24 @@ class Slave:
             print("\n Disconnecting... ")
             self.__exit()
 
+
+    #TODO: In morning
+    def __run_benchmark(self, data:list):
+        has_ycsb = subprocess.call("./ycsb_script.sh", shell=True)
+        if has_ycsb == 1 and data[0] == "run":
+            if data[1] == "mongodb":
+                operation = "run"
+                database = "mongodb"
+                run_param = data[2]
+                additional_param = data[3]
+                workload_data = data[4]
+                connection_string = " mongodb.url=mongodb://localhost:27017/ycsb?w=0"
+                run = subprocess.call(["../ycsb-0.17.0/bin/ycsb",
+                                       operation, database, run_param, additional_param,
+                                       "../ycsb-0.17.0/" + workload_data, "-p", connection_string])
+
+
+
     @classmethod
     def __get_sys_info(cls):
         total, used, free = disk_usage("/")  # Get disk usage in bytes
