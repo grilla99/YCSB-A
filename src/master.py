@@ -83,6 +83,7 @@ class Master:
                               f" <workloads/workload<X>> > outputFile ")
 
                 elif split_input[0] == "run":
+                    print(len_msg)
                     if len_msg == 5:
                         self.__run(split_input)
                     else:
