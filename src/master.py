@@ -145,17 +145,6 @@ class Master:
                 except timeout:
                     pass
 
-    def __send_message(self, target: socket, data: str):
-        target.send(data.encode(self.encoding))
-
-    def __send_message_to_all(self, data: str):
-        for i in range(self.workers_connected):
-            try:
-                self.__send_message(self.connected_socket_list[i], data)  # Send message
-            except ConnectionResetError:  # If connection Reset
-                self.__remove_worker(i)  # Remove the disconnected worker
-                i -= 1
-
     def __add_worker(self, connection: socket, address: tuple):
         self.connected_socket_list.append(connection)  # add worker's address to address list
         self.connected_address_list.append(address)  # add worker's socket to socket list
@@ -203,20 +192,35 @@ class Master:
         else:
             print(">> Bad format!")
 
+    def __send_message(self, target: socket, data: str):
+        target.send(data.encode(self.encoding))
+
+    def __send_message_to_all(self, data: str):
+        for i in range(self.workers_connected):
+            try:
+                self.__send_message(self.connected_socket_list[i], data)  # Send message
+            except ConnectionResetError:  # If connection Reset
+                self.__remove_worker(i)  # Remove the disconnected worker
+                i -= 1
+
     #TODO: Add the -s -P -p on client side, -s reports status, -P loads property files and -p is params
     def __load(self, input_msg: list):
         database = input_msg[1]  # Example "load mongodb workloads/workloada > outputLoad.txt"
         workload_string = input_msg[2]
         output_file = input_msg[4]
-
-        #TODO: add checking for validity of strings here
         if len(input_msg) == 5:
             try:
                 records_to_insert = int(input("How many records would you like to insert?: "))
                 records_per_node = int(records_to_insert / self.workers_connected)
-                print(records_per_node)
-                data = "load" + " " + database + " " + "-s -P" + " " + workload_string + " > " + output_file
-                self.__send_message_to_all(data)
+                for x in range(self.workers_connected):
+                    try:
+                        data = "load" + " " + database + " " + "-s -P" + " " + workload_string + " > " + output_file + \
+                            records_per_node + x  # load mongodb -s -P workloads/workloada > outputLoad.txt 1000 1
+                        print(data)
+                        self.__send_message(self.connected_socket_list[x], data)
+                    except ConnectionResetError:
+                        self.__remove_worker(x)  # Remove the disconnected worker
+                        x -= 1
             except ValueError:
                 print("No such database (needs to be changed)")
         else:
