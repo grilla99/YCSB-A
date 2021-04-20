@@ -34,6 +34,7 @@ class Slave:
                     msg = self.socket.recv(1024).decode(self.encoding).split(" ")  # Split received string with " " sep
                     len_msg = len(msg)  # Store length of msg receive
                     print(len_msg)
+                    print(msg)
                     if len_msg == 1:
                         if msg[0] == "start_log":  # If msg is only "start_log"
                             record = Thread(target=self.__start_log)  # Create record Thread
