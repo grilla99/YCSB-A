@@ -212,6 +212,9 @@ class Master:
         #TODO: add checking for validity of strings here
         if len(input_msg) == 5:
             try:
+                records_to_insert = int(input("How many records would you like to insert?: "))
+                records_per_node = int(records_to_insert / self.workers_connected)
+                print(records_per_node)
                 data = "load" + " " + database + " " + "-s -P" + " " + workload_string + " > " + output_file
                 self.__send_message_to_all(data)
             except ValueError:
