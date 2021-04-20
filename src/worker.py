@@ -158,8 +158,6 @@ class Slave:
             print("\n Disconnecting... ")
             self.__exit()
 
-
-    #TODO: In morning
     def __run_benchmark(self, data:list):
         has_ycsb = subprocess.call("./ycsb_script.sh", shell=True)
         if has_ycsb == 1 and data[0] == "run":
@@ -173,8 +171,10 @@ class Slave:
                 run = subprocess.call(["../ycsb-0.17.0/bin/ycsb",
                                        operation, database, run_param, additional_param,
                                        "../ycsb-0.17.0/" + workload_data, "-p", connection_string])
-
-
+        elif has_ycsb == 0:
+            print(f"Node {self.address}:{self.port} does not have YCSB installed.")
+            print("\n Disconnecting... ")
+            self.__exit()
 
     @classmethod
     def __get_sys_info(cls):

@@ -82,6 +82,13 @@ class Master:
                         print(f"[{now.hour}:{now.minute}] Too many arguments : Try like this 'load <database>"
                               f" <workloads/workload<X>> > outputFile ")
 
+                elif split_input[0] == "run":
+                    if len_msg == 5:
+                        self.__run(split_input)
+                    else:
+                        print(f"[{now.hour}:{now.minute}] Too many arguments : Try like this 'load <database>"
+                              f" <workloads/workload<X>> > outputFile ")
+
                 elif split_input[0] == "exit":  # #### EXIT #####
                     if len_msg == 1:
                         self.__exit(0)  # Exit master only
@@ -209,6 +216,20 @@ class Master:
                 self.__send_message_to_all(data)
             except ValueError:
                 print("No such database (needs to be changed)")
+        else:
+            print(">> Bad format!")
+
+    def __run(self, input_msg: list):
+        database = input_msg[1] # Example "run mongodb workloads/workloada > outputRun.txt"
+        workload_string = input_msg[2]
+        output_file = input_msg[4]
+
+        if len(input_msg) == 5:
+            try:
+                data = "run" + " " + database + " " + "-s -P" + " " + workload_string + " > " + output_file
+                self.__send_message_to_all(data)
+            except ValueError:
+                print("No such database")
         else:
             print(">> Bad format!")
 
