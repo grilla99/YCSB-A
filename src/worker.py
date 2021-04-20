@@ -33,6 +33,7 @@ class Slave:
                 try:
                     msg = self.socket.recv(1024).decode(self.encoding).split(" ")  # Split received string with " " sep
                     len_msg = len(msg)  # Store length of msg receive
+                    print(len_msg)
                     if len_msg == 1:
                         if msg[0] == "start_log":  # If msg is only "start_log"
                             record = Thread(target=self.__start_log)  # Create record Thread
@@ -46,12 +47,10 @@ class Slave:
                     elif len_msg == 2:
                         if msg[0] == "get_log":  # If msg is only "get_log" + arg (arg must be int!!!)
                             self.__get_log(int(msg[1]))
-                    elif len_msg == 7:
-                        if msg[0] == "load":  # If msg is a load operation, will load database with
-                            self.__load_data(msg)
-                    elif len_msg == 7:
-                        if msg[0] == "run":
-                            self.__run_benchmark(msg)
+                    elif len_msg == 7 and msg[0] == "load":
+                        self.__load_data(msg)
+                    elif len_msg == 7 and msg[0] == "run":
+                        self.__run_benchmark(msg)
 
                 except ConnectionResetError:
                     print("/!\\ Disconnected...")
