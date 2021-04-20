@@ -33,8 +33,6 @@ class Slave:
                 try:
                     msg = self.socket.recv(1024).decode(self.encoding).split(" ")  # Split received string with " " sep
                     len_msg = len(msg)  # Store length of msg receive
-                    print(len_msg)
-                    print(msg)
                     if len_msg == 1:
                         if msg[0] == "start_log":  # If msg is only "start_log"
                             record = Thread(target=self.__start_log)  # Create record Thread
@@ -48,7 +46,7 @@ class Slave:
                     elif len_msg == 2:
                         if msg[0] == "get_log":  # If msg is only "get_log" + arg (arg must be int!!!)
                             self.__get_log(int(msg[1]))
-                    elif len_msg == 7 and msg[0] == "load":
+                    elif len_msg == 9 and msg[0] == "load":
                         self.__load_data(msg)
                     elif len_msg == 7 and msg[0] == "run":
                         self.__run_benchmark(msg)
@@ -149,10 +147,18 @@ class Slave:
             run_param = data[2]
             additional_param = data[3]
             workload_data = data[4]
+            # e.g. if node = 0 and record count = 10: insert start = 0
+            # e.g. if node = 1 and record count = 10: (nodenum - 1) = 1 * 10, insert start = 10
+            # e.g. if node = 2 and record count = 10: (nodenum - 1) = 2 * 10, insert start = 20
+            insert_start = 0 if data[8] == "0" else int(data[8]) * int(data[7])
+            insert_start_string = "insertstart=" + str(insert_start)
+            insert_count = "insertcount=" + data[7]
+            record_count = int(data[9])
             connection_string = " mongodb.url=mongodb://localhost:27017/ycsb?w=0"
             run = subprocess.call(["../ycsb-0.17.0/bin/ycsb",
                                   operation, database, run_param, additional_param, "../ycsb-0.17.0/" + workload_data,
-                                   "-p", connection_string])
+                                   "-p", connection_string, "-p", insert_count, "-p", insert_start_string,
+                                   "-p", "recordcount=", record_count])
 
             print(" contents of run : ", run)
         elif has_ycsb == 0:  # If the node doesn't have YCSB installed, issue error message and exit
