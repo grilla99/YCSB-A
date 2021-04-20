@@ -210,13 +210,13 @@ class Master:
         output_file = input_msg[4]
         if len(input_msg) == 5:
             try:
-                records_to_insert = input("How many records would you like to insert?: ")
+                records_to_insert = int(input("How many records would you like to insert?: "))
                 records_per_node = str(int(records_to_insert / self.workers_connected))
                 for x in range(self.workers_connected):
                     try:
                         data = "load" + " " + database + " " + "-s -P" + " " + workload_string + " > " + output_file + " " \
                            + records_per_node + " " + str(x) + \
-                           " " + records_to_insert # load mongodb -s -P workloads/workloada > outputLoad.txt 1000 1
+                           " " + str(records_to_insert) # load mongodb -s -P workloads/workloada > outputLoad.txt 1000 1
                         print(data)
                         self.__send_message(self.connected_socket_list[x], data)
                     except ConnectionResetError:
