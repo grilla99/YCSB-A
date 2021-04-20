@@ -49,7 +49,9 @@ class Slave:
                     elif len_msg == 7:
                         if msg[0] == "load":  # If msg is a load operation, will load database with
                             self.__load_data(msg)
-
+                    elif len_msg == 7:
+                        if msg[0] == "run":
+                            self.__run_benchmark(msg)
 
                 except ConnectionResetError:
                     print("/!\\ Disconnected...")
