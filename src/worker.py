@@ -99,6 +99,27 @@ class Slave:
         else:
             self.__send_message("Error, not recording.")
 
+    @staticmethod
+    def get_log_name(self, operation, node_num, database):
+        date = datetime.today()
+        format_date = date.strftime('%d-%m-%y %H:%M:%S')
+
+        if operation == "run":
+            filename = "run_logs/node_" + node_num+ "_" + database + "_" + format_date + ".log"
+            script_dir = os.path.dirname(__file__)  # Absolute directory this script is in
+            abs_file_path = os.path.join(script_dir, filename)
+
+            return abs_file_path
+
+        elif operation == "load":
+            filename = "load_logs/node_" + node_num + "_" + database + "_" + format_date + ".log"
+            script_dir = os.path.dirname(__file__)  # Absolute directory this script is in
+            abs_file_path = os.path.join(script_dir, filename)
+
+            return abs_file_path
+        else:
+            print("Invalid operation type. Exiting...")
+
     def __get_log(self, nbr_lines: int):  # Send log to master (arg = line number from the bottom of log file)
         if self.recording:
             self.__stop_log()  # Stopping log before sending
@@ -152,27 +173,22 @@ class Slave:
             run_param = data[2]  # -s
             additional_param = data[3]  # -p / -P
             workload_data = data[4]  # e.g. workloads/workloada
+            node = data[8]
             # e.g. if node = 0 and record count = 10: insert start = 0
             # e.g. if node = 1 and record count = 10: = 1 * 10, insert start = 10
             # e.g. if node = 2 and record counst = 10: = 2 * 10, insert start = 20
             # Data[8] is the 'Node number' in relation to master
             # Data[7] is the number of records to insert
-            insert_start = 0 if data[8] == "0" else int(data[8]) * int(data[7])
+            insert_start = 0 if node == "0" else int(node) * int(data[7])
             insert_start_string = "insertstart=" + str(insert_start)
             insert_count = "insertcount=" + data[7]
             record_count = data[9]
             connection_string = " mongodb.url=mongodb://localhost:27017/ycsb?w=0"
 
-            # Name the file using todays date, and save it in the log folder
-            date = datetime.today()
-            format_date = date.strftime('%d-%m-%y %H:%M:%S')
-            filename = "load_logs/load_node_" + data[8] + "_" + database + "_" + format_date + ".log"
-            script_dir = os.path.dirname(__file__)  # Absolute directory this script is in
-            abs_file_path = os.path.join(script_dir, filename)
-
             # If a file exists already, will write to it. If not it shall create a file and write the output
             # Of the YCSB log to it
-            with open(abs_file_path, "w+") as f:
+            file = self.get_log_name(self, "load", data[8], database)
+            with open(file, "w+") as f:
                 run = subprocess.call(["../ycsb-0.17.0/bin/ycsb",
                                       operation, database, run_param, additional_param, "../ycsb-0.17.0/" + workload_data,
                                       "-p", connection_string, "-p", insert_count, "-p", insert_start_string,
@@ -195,14 +211,20 @@ class Slave:
                 workload_data = data[4]
                 connection_string = " mongodb.url=mongodb://localhost:27017/ycsb?w=0"
                 operation_count = data[7]
-                run = subprocess.call(["../ycsb-0.17.0/bin/ycsb",
-                                       operation, database, run_param, additional_param,
-                                       "../ycsb-0.17.0/" + workload_data, "-p", connection_string
-                                       , "-p", "operationcount=" + operation_count])
+                node = data[8]
+
+                file = self.get_log_name(self, "run", node, database)
+
+                with open(file, "w+") as f: # Performs the run phase of YCSB and saves it to the run_logs folder
+                    run = subprocess.call(["../ycsb-0.17.0/bin/ycsb",
+                                           operation, database, run_param, additional_param,
+                                           "../ycsb-0.17.0/" + workload_data, "-p", connection_string
+                                           , "-p", "operationcount=" + operation_count], stdout=f)
         elif has_ycsb == 0:
             print(f"Node {self.address}:{self.port} does not have YCSB installed.")
             print("\n Disconnecting... ")
             self.__exit()
+
 
     @classmethod
     def __get_sys_info(cls):

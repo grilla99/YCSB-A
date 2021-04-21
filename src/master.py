@@ -240,7 +240,7 @@ class Master:
                 for x in range(self.workers_connected):
                     try:
                         data = "run" + " " + database + " " + "-s -P" + " " + workload_string + " > " + output_file + \
-                            " " + individual_ops
+                            " " + individual_ops + " " + str(x)
                         self.__send_message(self.connected_socket_list[x], data)
                     except ConnectionResetError:
                         self.__remove_worker(x) # Remove disconnected worker
