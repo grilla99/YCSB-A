@@ -236,11 +236,11 @@ class Master:
             try:
                 operation_count = input("How many operations do you wish to perform?"
                                         ". (Same as total records in loading phase)")
-                individual_ops = int(int(operation_count) / self.workers_connected)
+                individual_ops = str(int(int(operation_count) / self.workers_connected))
                 for x in range(self.workers_connected):
                     try:
                         data = "run" + " " + database + " " + "-s -P" + " " + workload_string + " > " + output_file + \
-                            "-p" + str(individual_ops)
+                            " " + individual_ops
                         self.__send_message(self.connected_socket_list[x], data)
                     except ConnectionResetError:
                         self.__remove_worker(x) # Remove disconnected worker
