@@ -184,7 +184,7 @@ class Slave:
                 run = subprocess.call(["../ycsb-0.17.0/bin/ycsb",
                                        operation, database, run_param, additional_param,
                                        "../ycsb-0.17.0/" + workload_data, "-p", connection_string
-                                       , "-p", "operationcount=" + operation_count])
+                                       , "-p", "operationcount=" + operation_count, " > outputLoad.txt"])
         elif has_ycsb == 0:
             print(f"Node {self.address}:{self.port} does not have YCSB installed.")
             print("\n Disconnecting... ")
