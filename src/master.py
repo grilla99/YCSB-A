@@ -227,14 +227,17 @@ class Master:
         else:
             print(">> Bad format!")
 
+    # Record count here needs to be the same as in the load phase
     def __run(self, input_msg: list):
         database = input_msg[1] # Example "run mongodb workloads/workloada > outputRun.txt"
         workload_string = input_msg[2]
         output_file = input_msg[4]
-
         if len(input_msg) == 5:
             try:
-                data = "run" + " " + database + " " + "-s -P" + " " + workload_string + " > " + output_file
+                operation_count = input("How many operations do you wish to perform?"
+                                        ". (The same number as total records in the load phase)")
+                data = "run" + " " + database + " " + "-s -P" + " " + workload_string + " > " + output_file + \
+                    operation_count
                 self.__send_message_to_all(data)
             except ValueError:
                 print("No such database")

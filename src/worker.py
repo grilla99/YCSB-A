@@ -46,9 +46,9 @@ class Slave:
                     elif len_msg == 2:
                         if msg[0] == "get_log":  # If msg is only "get_log" + arg (arg must be int!!!)
                             self.__get_log(int(msg[1]))
-                    elif len_msg == 9 and msg[0] == "load":
+                    elif len_msg == 10 and msg[0] == "load":
                         self.__load_data(msg)
-                    elif len_msg == 7 and msg[0] == "run":
+                    elif len_msg == 8 and msg[0] == "run":
                         self.__run_benchmark(msg)
 
                 except ConnectionResetError:
@@ -138,6 +138,9 @@ class Slave:
         except FileNotFoundError:
             return None
 
+    # Insert Count = How many Records a YCSB client will be inserting during a load phase
+    # Record Count = How many Records a YCSB client assumes are present or will be present in the data store
+    # Record Count > Insert count
     def __load_data(self, data:list):
         # Shell = True can be a security hazard if combined with untrusted input
         has_ycsb = subprocess.call("./ycsb_script.sh", shell=True)
@@ -149,18 +152,17 @@ class Slave:
             workload_data = data[4]
             # e.g. if node = 0 and record count = 10: insert start = 0
             # e.g. if node = 1 and record count = 10: (nodenum - 1) = 1 * 10, insert start = 10
-            # e.g. if node = 2 and record count = 10: (nodenum - 1) = 2 * 10, insert start = 20
+            # e.g. if node = 2 and record counst = 10: (nodenum - 1) = 2 * 10, insert start = 20
             insert_start = 0 if data[8] == "0" else int(data[8]) * int(data[7])
             insert_start_string = "insertstart=" + str(insert_start)
             insert_count = "insertcount=" + data[7]
-            record_count = int(data[9])
+            record_count = data[9]
             connection_string = " mongodb.url=mongodb://localhost:27017/ycsb?w=0"
             run = subprocess.call(["../ycsb-0.17.0/bin/ycsb",
                                   operation, database, run_param, additional_param, "../ycsb-0.17.0/" + workload_data,
                                    "-p", connection_string, "-p", insert_count, "-p", insert_start_string,
-                                   "-p", "recordcount=", record_count])
+                                   "-p", "recordcount=" + record_count])
 
-            print(" contents of run : ", run)
         elif has_ycsb == 0:  # If the node doesn't have YCSB installed, issue error message and exit
             print(f"Node {self.address}:{self.port} does not have YCSB installed.")
             print("\n Disconnecting... ")
@@ -168,6 +170,7 @@ class Slave:
 
     def __run_benchmark(self, data:list):
         has_ycsb = subprocess.call("./ycsb_script.sh", shell=True)
+        print(data)
         if has_ycsb == 1 and data[0] == "run":
             if data[1] == "mongodb":
                 operation = "run"
