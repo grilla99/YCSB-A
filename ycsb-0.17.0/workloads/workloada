@@ -28,6 +28,8 @@ workload=site.ycsb.workloads.CoreWorkload
 
 readallfields=true
 
+measurement.raw.output_file = /ycsb-0.17.0/outputLoad.txt
+
 readproportion=0.5
 updateproportion=0.5
 scanproportion=0
