@@ -235,7 +235,7 @@ class Master:
         if len(input_msg) == 5:
             try:
                 operation_count = input("How many operations do you wish to perform?"
-                                        ". (The same number as total records in the load phase)")
+                                        ". (Same as total records in loading phase)")
                 data = "run" + " " + database + " " + "-s -P" + " " + workload_string + " > " + output_file + \
                     " " + operation_count
                 self.__send_message_to_all(data)
