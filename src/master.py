@@ -237,7 +237,7 @@ class Master:
                 operation_count = input("How many operations do you wish to perform?"
                                         ". (The same number as total records in the load phase)")
                 data = "run" + " " + database + " " + "-s -P" + " " + workload_string + " > " + output_file + \
-                    operation_count
+                    " " + operation_count
                 self.__send_message_to_all(data)
             except ValueError:
                 print("No such database")

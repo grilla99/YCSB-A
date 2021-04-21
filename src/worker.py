@@ -33,6 +33,7 @@ class Slave:
                 try:
                     msg = self.socket.recv(1024).decode(self.encoding).split(" ")  # Split received string with " " sep
                     len_msg = len(msg)  # Store length of msg receive
+                    print(len_msg, msg)
                     if len_msg == 1:
                         if msg[0] == "start_log":  # If msg is only "start_log"
                             record = Thread(target=self.__start_log)  # Create record Thread
@@ -179,9 +180,11 @@ class Slave:
                 additional_param = data[3]
                 workload_data = data[4]
                 connection_string = " mongodb.url=mongodb://localhost:27017/ycsb?w=0"
+                recordcount = "recordcount=" + data[7]
                 run = subprocess.call(["../ycsb-0.17.0/bin/ycsb",
                                        operation, database, run_param, additional_param,
-                                       "../ycsb-0.17.0/" + workload_data, "-p", connection_string])
+                                       "../ycsb-0.17.0/" + workload_data, "-p", connection_string
+                                       , "-p", recordcount])
         elif has_ycsb == 0:
             print(f"Node {self.address}:{self.port} does not have YCSB installed.")
             print("\n Disconnecting... ")
