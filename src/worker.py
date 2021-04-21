@@ -50,7 +50,7 @@ class Slave:
                             self.__get_log(int(msg[1]))
                     elif len_msg == 10 and msg[0] == "load":
                         self.__load_data(msg)
-                    elif len_msg == 8 and msg[0] == "run":
+                    elif len_msg == 9 and msg[0] == "run":
                         self.__run_benchmark(msg)
 
                 except ConnectionResetError:
