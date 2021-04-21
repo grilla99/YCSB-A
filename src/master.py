@@ -236,9 +236,15 @@ class Master:
             try:
                 operation_count = input("How many operations do you wish to perform?"
                                         ". (Same as total records in loading phase)")
-                data = "run" + " " + database + " " + "-s -P" + " " + workload_string + " > " + output_file + \
-                    " " + operation_count
-                self.__send_message_to_all(data)
+                individual_ops = int(int(operation_count) / self.workers_connected)
+                for x in range(self.workers_connected):
+                    try:
+                        data = "run" + " " + database + " " + "-s -P" + " " + workload_string + " > " + output_file + \
+                            "-p" + str(individual_ops)
+                        self.__send_message(self.connected_socket_list[x], data)
+                    except ConnectionResetError:
+                        self.__remove_worker(x) # Remove disconnected worker
+                        x -= 1
             except ValueError:
                 print("No such database")
         else:
