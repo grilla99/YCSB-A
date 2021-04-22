@@ -105,14 +105,14 @@ class Slave:
         format_date = date.strftime('%d-%m-%y %H:%M:%S')
 
         if operation == "run":
-            filename = "run_logs/node_" + node_num+ "_" + database + "_" + format_date + ".log"
+            filename = "run_logs/node_" + node_num+ "_" + database + "_" + format_date + ".out"
             script_dir = os.path.dirname(__file__)  # Absolute directory this script is in
             abs_file_path = os.path.join(script_dir, filename)
 
             return abs_file_path
 
         elif operation == "load":
-            filename = "load_logs/node_" + node_num + "_" + database + "_" + format_date + ".log"
+            filename = "load_logs/node_" + node_num + "_" + database + "_" + format_date + ".out"
             script_dir = os.path.dirname(__file__)  # Absolute directory this script is in
             abs_file_path = os.path.join(script_dir, filename)
 

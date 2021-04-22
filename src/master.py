@@ -216,7 +216,7 @@ class Master:
                     try:
                         data = "load" + " " + database + " " + "-s -P" + " " + workload_string + " > " + output_file + " " \
                            + records_per_node + " " + str(x) + \
-                           " " + str(records_to_insert) # load mongodb -s -P workloads/workloada > outputLoad.txt 1000 1
+                           " " + str(records_to_insert)  # load mongodb -s -P workloads/workloada > outputLoad.txt 1000 1
                         print(data)
                         self.__send_message(self.connected_socket_list[x], data)
                     except ConnectionResetError:
