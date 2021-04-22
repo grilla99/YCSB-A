@@ -5,6 +5,8 @@ from socket import socket, timeout
 from threading import Thread
 from argparse import ArgumentParser
 import logging
+import os
+import tqdm
 
 class Master:
     #Master takes a string as the address and an integer for the port
@@ -86,8 +88,15 @@ class Master:
                     if len_msg == 5:
                         self.__run(split_input)
                     else:
-                        print(f"[{now.hour}:{now.minute}] Too many arguments : Try like this 'load <database>"
+                        print(f"[{now.hour}:{now.minute}] Too many arguments : Try like this 'run <database>"
                               f" <workloads/workload<X>> > outputFile ")
+
+                elif split_input[0] == "benchmark" and split_input[1] == "logs":
+                    if len_msg == 3:
+                        print(split_input)
+                        self.__get_benchmark_log(split_input)
+                    else:
+                        print(f"[{now.hour}:{now.minute}] Too many arguments : Try like this 'benchmark logs")
 
                 elif split_input[0] == "exit":  # #### EXIT #####
                     if len_msg == 1:
@@ -128,16 +137,35 @@ class Master:
             i = 0
             while i < self.workers_connected and not self.stop:  # loop on every worker to receive messages
                 try:
-                    msg_received = self.connected_socket_list[i].recv(1024).decode(self.encoding)
-                    if msg_received == "exit":  # If message == "exit"
-                        self.__remove_worker(i)  # Remove the worker
+                    msg_received = self.connected_socket_list[i].recv(4096).decode(self.encoding)
+                    split_input = msg_received.split(" ")
+                    if split_input[0] == "exit":  # If message == "exit"
+                        self.__remove_worker(i)  # Remove the workers
                     else:
-                        now = datetime.now()
-                        print(f"[{now.hour}:{now.minute}] {self.connected_address_list[i][0]}:"
-                              f"{self.connected_address_list[i][1]} >>>", msg_received)
-                        msg_received = " ".join(msg_received.split("\n"))  # replace "\n" with " "
-                        logging.info(f"{self.connected_address_list[i][0]}:"
-                                     f"{self.connected_address_list[i][1]} >>> " + msg_received)
+                        # filename, filesize = msg_received.split("<SEPARATOR>")
+                        # filename = os.path.basename(filename)
+                        # filesize = int(filesize)
+                        #
+                        # progress = tqdm.tqdm(range(filesize), f"Receiving {filename}", unit="B", unit_scale=True,
+                        #                      unit_divisor=1024)
+
+                        with open("output.txt", "wt") as f:
+                            while True:
+                                # Read 1024 bytes from socket
+                                if msg_received == " ":
+                                    break
+                                else:
+                                    f.write(msg_received)
+                                    print(msg_received)
+                                break
+
+                        # else
+                    #     now = datetime.now()
+                    #     print(f"[{now.hour}:{now.minute}] {self.connected_address_list[i][0]}:"
+                    #           f"{self.connected_address_list[i][1]} >>>", msg_received)
+                    #     msg_received = " ".join(msg_received.split("\n"))  # replace "\n" with " "
+                    #     logging.info(f"{self.connected_address_list[i][0]}:"
+                    #                  f"{self.connected_address_list[i][1]} >>> " + msg_received)
                         i += 1
                 except (ConnectionResetError, ConnectionAbortedError):  # If connection Reset ou Aborted
                     logging.error("ConnectionError > Removing worker.")
@@ -250,6 +278,24 @@ class Master:
         else:
             print(">> Bad format!")
 
+    def __get_benchmark_log(self, input_msg: list):
+        database = input_msg[2]
+        if len(input_msg) == 3:
+            try:
+                for x in range(self.workers_connected):
+                    try:
+                        data = "get" + " " + "benchmark" + " " + "logs" + " " + database
+                        self.__send_message(self.connected_socket_list[x], data)
+                    except ConnectionResetError:
+                        self.__remove_worker(x)
+                        x -= 1
+            except ValueError:
+                print("Check string formatting")
+        else:
+            print(">> Bad format !")
+
+
+
     @classmethod
     def __print_help(cls):
         print(
@@ -265,7 +311,7 @@ class Master:
               "  - run <mongodb>|<cassandra> -s -P workloads/workload<X> > outputRun.txt")
         print("  - help : Print this help menu.")
         print("  - worker : Print addresses of connected workers.")
-        print("  - attack : Print planed attack.")
+        print("  - benchmark logs <mongodb>|<cassandra>: Retrieve and collate benchmark logs from workers.")
         print("  - exit [all] : Exit master only. Add 'all' option to stop worker execution too.")
         print(
             "----------------------------------------------------------------------------------------------------")
@@ -277,7 +323,6 @@ class Master:
                 print(f"   - {self.connected_address_list[i][0]}:{self.connected_address_list[i][1]}")
         else:
             print("  -- No connected workers --")
-
 
     def __exit(self, exit_code: int):
         if exit_code == 1:  # 1 =  Quit all

@@ -10,6 +10,7 @@ from uuid import getnode
 from psutil import cpu_count, virtual_memory
 from os import remove
 import subprocess
+import tqdm
 import os
 from requests import get
 from requests.exceptions import ConnectionError
@@ -48,6 +49,9 @@ class Slave:
                     elif len_msg == 2:
                         if msg[0] == "get_log":  # If msg is only "get_log" + arg (arg must be int!!!)
                             self.__get_log(int(msg[1]))
+                    elif len_msg == 4:
+                        if msg[0] == "get" and msg[1] == "benchmark":
+                            self.__get_benchmark_log(msg)
                     elif len_msg == 10 and msg[0] == "load":
                         self.__load_data(msg)
                     elif len_msg == 9 and msg[0] == "run":
@@ -147,6 +151,7 @@ class Slave:
             self.connected = False
             self.__connection()
 
+
     def __get_log_into_str(self, nbr_lines: int):
         try:
             log_file = open(self.file_name, "r")  # Open log file in write mode
@@ -215,15 +220,48 @@ class Slave:
 
                 file = self.get_log_name(self, "run", node, database)
 
+                # Saves the output of the run to file
                 with open(file, "w+") as f: # Performs the run phase of YCSB and saves it to the run_logs folder
                     run = subprocess.call(["../ycsb-0.17.0/bin/ycsb",
                                            operation, database, run_param, additional_param,
                                            "../ycsb-0.17.0/" + workload_data, "-p", connection_string
                                            , "-p", "operationcount=" + operation_count], stdout=f)
+
+                self.__get_benchmark_log(file)
+
+
         elif has_ycsb == 0:
             print(f"Node {self.address}:{self.port} does not have YCSB installed.")
             print("\n Disconnecting... ")
             self.__exit()
+
+    def __get_benchmark_log(self, data: str):
+        script_dir = os.path.dirname(__file__)
+        dirname = "run_logs"
+        abs_file_path = os.path.join(script_dir, dirname)
+        buffer_size = 4096
+        separator = "<SEPARATOR>"
+
+        for log_file in os.listdir(abs_file_path):
+            if log_file.endswith(".out"):
+                filename = abs_file_path + "/" + log_file
+                filesize = os.path.getsize(abs_file_path + "/" + log_file)
+                progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit="B", unit_scale=True, unit_divisor=1024)
+
+                with open(filename, 'r') as f:
+                        while True:
+                            bytes_read = f.read(buffer_size)
+                            print(bytes_read)
+                            if not bytes_read:
+                                # File transmission done
+                                break
+                            self.socket.sendall(bytes_read.encode())
+                            progress.update(len(bytes_read))
+
+
+    def __get_all_benchmark_logs(self, data:str):
+
+
 
 
     @classmethod
