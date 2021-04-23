@@ -25,7 +25,7 @@ def merge():
     fold_functions['Return=0']              = sum, same
     fold_functions['Return=[^0].*']         = sum, same
     fold_functions['AverageLatency']        = avg, scale1k
-    fold_functions['MinLatency']            = min, scale1k
+    fold_functions['MinsLatency']            = min, scale1k
     fold_functions['MaxLatency']            = max, scale1k
     fold_functions['95thPercentileLatency'] = max, same
     fold_functions['99thPercentileLatency'] = max, same

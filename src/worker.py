@@ -51,7 +51,7 @@ class Slave:
                             self.__get_log(int(msg[1]))
                     elif len_msg == 4:
                         if msg[0] == "get" and msg[1] == "benchmark":
-                            self.__get_benchmark_log(msg)
+                            self.__get_all_benchmark_logs(msg)
                     elif len_msg == 10 and msg[0] == "load":
                         self.__load_data(msg)
                     elif len_msg == 9 and msg[0] == "run":
@@ -219,6 +219,7 @@ class Slave:
                 node = data[8]
 
                 file = self.get_log_name(self, "run", node, database)
+                print("file is" + file)
 
                 # Saves the output of the run to file
                 with open(file, "w+") as f: # Performs the run phase of YCSB and saves it to the run_logs folder
@@ -235,7 +236,32 @@ class Slave:
             print("\n Disconnecting... ")
             self.__exit()
 
-    def __get_benchmark_log(self, data: str):
+
+    #TODO: It's breaking on this after executing the function from insert file
+    #TODO: File path being passed is incorrect and is using absolute file path, needs to be relative to executing
+    # directory
+    def __get_benchmark_log(self, file: str):
+        try:
+            buffer_size = 4096
+
+            filesize = os.path.getsize(file)
+            progress = tqdm.tqdm(range(filesize), f"Sending...", unit="B", unit_scale=True,
+                                 unit_divisor=1024)
+
+            with open(file, 'r') as f:
+                while True:
+                    bytes_read = f.read(buffer_size)
+                    print(bytes_read)
+                    if not bytes_read:
+                        break
+                    self.socket.sendall(bytes_read.encode())
+                    progress.update(len(bytes_read))
+        except FileNotFoundError:
+            print("File does not Exist")
+
+
+
+    def __get_all_benchmark_logs(self, data:str):
         script_dir = os.path.dirname(__file__)
         dirname = "run_logs"
         abs_file_path = os.path.join(script_dir, dirname)
@@ -246,21 +272,18 @@ class Slave:
             if log_file.endswith(".out"):
                 filename = abs_file_path + "/" + log_file
                 filesize = os.path.getsize(abs_file_path + "/" + log_file)
-                progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit="B", unit_scale=True, unit_divisor=1024)
+                progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit="B", unit_scale=True,
+                                     unit_divisor=1024)
 
                 with open(filename, 'r') as f:
-                        while True:
-                            bytes_read = f.read(buffer_size)
-                            print(bytes_read)
-                            if not bytes_read:
-                                # File transmission done
-                                break
-                            self.socket.sendall(bytes_read.encode())
-                            progress.update(len(bytes_read))
-
-
-    def __get_all_benchmark_logs(self, data:str):
-
+                    while True:
+                        bytes_read = f.read(buffer_size)
+                        print(bytes_read)
+                        if not bytes_read:
+                            # File transmission done
+                            break
+                        progress.update(len(bytes_read))
+                        self.socket.sendall(bytes_read.encode())
 
 
 

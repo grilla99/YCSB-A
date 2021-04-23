@@ -142,14 +142,14 @@ class Master:
                     if split_input[0] == "exit":  # If message == "exit"
                         self.__remove_worker(i)  # Remove the workers
                     else:
-                        # filename, filesize = msg_received.split("<SEPARATOR>")
+                        filename, filesize = msg_received.split("<SEPARATOR>")
                         # filename = os.path.basename(filename)
-                        # filesize = int(filesize)
-                        #
-                        # progress = tqdm.tqdm(range(filesize), f"Receiving {filename}", unit="B", unit_scale=True,
-                        #                      unit_divisor=1024)
+                        filesize = int(filesize)
 
-                        with open("output.txt", "wt") as f:
+                        progress = tqdm.tqdm(range(filesize), f"Receiving {filename}", unit="B", unit_scale=True,
+                                              unit_divisor=1024)
+
+                        with open(filename, "wt") as f:
                             while True:
                                 # Read 1024 bytes from socket
                                 if msg_received == " ":
