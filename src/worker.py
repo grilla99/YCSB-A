@@ -188,7 +188,6 @@ class Slave:
             insert_start_string = "insertstart=" + str(insert_start)
             insert_count = "insertcount=" + data[7]
             record_count = data[9]
-            connection_string = " mongodb.url=mongodb://localhost:27017/ycsb?w=0"
             connection_string = " mongodb.url=mongodb://172.31.26.152:27017,172.31.18.215:27017,172.31.27.18:27017/?replicaSet=rs0"
 
             # If a file exists already, will write to it. If not it shall create a file and write the output
@@ -217,7 +216,6 @@ class Slave:
                 run_param = data[2]
                 additional_param = data[3]
                 workload_data = data[4]
-                # connection_string = " mongodb.url=mongodb://localhost:27017/ycsb?w=0"
                 connection_string = " mongodb.url=mongodb://172.31.26.152:27017,172.31.18.215:27017,172.31.27.18:27017/?replicaSet=rs0"
                 operation_count = data[7]
                 node = data[8]
