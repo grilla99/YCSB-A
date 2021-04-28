@@ -225,7 +225,7 @@ class Slave:
 
                 # Saves the output of the run to file
                 with open(file, "w+") as f: # Performs the run phase of YCSB and saves it to the run_logs folder
-                    run = subprocess.call(["../ycsb-0.17.0/bin/ycsb",
+                    run = subprocess.call(["../YCSB/ycsb-mongodb/bin/ycsb",
                                            operation, database, run_param, additional_param,
                                            "../ycsb-0.17.0/" + workload_data, "-p", connection_string
                                            , "-p", "operationcount=" + operation_count], stdout=f)
