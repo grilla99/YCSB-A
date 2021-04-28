@@ -167,7 +167,7 @@ class Slave:
             return None
 
     # Insert Count = How many Records a YCSB client will be inserting during a load phase
-    # Record Count = How many Records a YCSB client assumes are present or will be present in the data store
+    # Record Count = How many Records a YCSB client assumes are present or will te be present in the data store
     # Record Count > Insert count
     def __load_data(self, data:list):
         # Shell = True can be a security hazard if combined with untrusted input
