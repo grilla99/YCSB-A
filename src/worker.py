@@ -180,7 +180,7 @@ class Slave:
             workload_data = data[4]  # e.g. workloads/workloada
             node = data[8]
             # e.g. if node = 0 and record count = 10: insert start = 0
-            # e.g. if node = 1 and record cousnt = 10: = 1 * 10, insert start = 10
+            # e.g. if node = 1 and record count = 10: = 1 * 10, insert start = 10
             # e.g. if node = 2 and record counst = 10: = 2 * 10, insert start = 20
             # Data[8] is the 'Node number' in relation to master
             # Data[7] is the number of records to insert
@@ -196,8 +196,8 @@ class Slave:
 
 
             with open(file, "w+") as f:
-                run = subprocess.call(["../YCSB/ycsb-mongodb/bin/ycsb",
-                                      operation, database, run_param, additional_param, "../YCSB/ycsb-mongodb/" + workload_data,
+                run = subprocess.call(["../ycsb-0.17.0/bin/ycsb",
+                                      operation, database, run_param, additional_param, "../ycsb-0.17.0/" + workload_data,
                                       "-p", connection_string, "-p", insert_count, "-p", insert_start_string,
                                        "-p", "recordcount=" + record_count], stdout=f)
 
@@ -225,7 +225,7 @@ class Slave:
 
                 # Saves the output of the run to file
                 with open(file, "w+") as f: # Performs the run phase of YCSB and saves it to the run_logs folder
-                    run = subprocess.call(["../YCSB/ycsb-mongodb/bin/ycsb",
+                    run = subprocess.call(["../ycsb-0.17.0/bin/ycsb",
                                            operation, database, run_param, additional_param,
                                            "../ycsb-0.17.0/" + workload_data, "-p", connection_string
                                            , "-p", "operationcount=" + operation_count], stdout=f)
