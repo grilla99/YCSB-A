@@ -42,10 +42,9 @@ def merge():
     ops_keys = ops.keys()
     regexps = map(re.compile, metrics)
     cns = []
-    # trying each regexp for each line is TERRIBLY slow, therefore
+    # trying each regexp is slow, therefore
     # we need to obtain searchable prefix to make preprocessing
     prefixes = map(lambda mt: str(re.search('\w+', mt).group(0)), metrics)
-    # other stuff
     stats = NestedDict()
     # Gets all items in the current directory that end with .out
     items = filter(lambda x: str(x).endswith('.out'), os.listdir('.'))

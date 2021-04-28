@@ -138,8 +138,7 @@ class Master:
             while i < self.workers_connected and not self.stop:  # loop on every worker to receive messages
                 try:
                     msg_received = self.connected_socket_list[i].recv(4096).decode(self.encoding)
-                    split_input = msg_received.split(" ")
-                    if split_input[0] == "exit":  # If message == "exit"
+                    if msg_received == "exit":  # If message == "exit"
                         self.__remove_worker(i)  # Remove the workers
                     else:
                         filename, filesize = msg_received.split("<SEPARATOR>")
@@ -199,26 +198,6 @@ class Master:
         data = "get_log" + " " + str(lines)
         self.__send_message_to_all(data)
 
-    def __ddos(self, input_msg: list):
-        connection_url = input_msg[1]  # Example "ddos 192.168.2.159 2019-11-10 19:52:28"
-        date = input_msg[2].split("-")  # Split msg[2] with "-" separator into date[0->2]
-        hour = input_msg[3].split(":")  # Split msg[3] with ":" separator into hour[0->2]
-        if len(hour) == 3 and len(date) == 3:
-            try:
-                date_time = datetime(int(date[0]), int(date[1]), int(date[2]), int(hour[0]), int(hour[1]),
-                                     int(hour[2]))
-                if datetime.now() < date_time:
-                    data = "ddos" + " " + connection_url + " " + input_msg[2] + " " + input_msg[3]
-                    self.planned_attacks.append([connection_url, date_time, self.workers_connected])
-                    self.__send_message_to_all(data)
-                else:
-                    print(">> Date must be in future!")
-                    logging.warning("Input date must be in future!")
-            except ValueError:
-                print(">> Invalid Date!")
-                logging.error("ValueError > Invalid Date!")
-        else:
-            print(">> Bad format!")
 
     def __send_message(self, target: socket, data: str):
         target.send(data.encode(self.encoding))
@@ -278,6 +257,7 @@ class Master:
         else:
             print(">> Bad format!")
 
+
     def __get_benchmark_log(self, input_msg: list):
         database = input_msg[2]
         if len(input_msg) == 3:
@@ -303,8 +283,6 @@ class Master:
         print("  - start : Start log recording on all connected workers.")
         print("  - stop : Stop log recording on all connected workers.")
         print("  - get <lines> : Ask to workers to send the last <lines> of log file.")
-        print(
-            "  - ddos <address> <date-url> <hh:mm:ss> : Ask to all workers to HTTP request <connection-url> on <date> at <time>.")
         print(" "
               "  - load <mongodb>|<cassandra> workloads/workload<X> > outputLoad.txt")
         print("  "

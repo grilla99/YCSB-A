@@ -189,10 +189,13 @@ class Slave:
             insert_count = "insertcount=" + data[7]
             record_count = data[9]
             connection_string = " mongodb.url=mongodb://localhost:27017/ycsb?w=0"
+            connection_string = " mongodb.url=mongodb://172.31.26.152:27017,172.31.18.215:27017,172.31.27.18:27017/?replicaSet=rs0"
 
             # If a file exists already, will write to it. If not it shall create a file and write the output
             # Of the YCSB log to it
             file = self.get_log_name(self, "load", data[8], database)
+
+
             with open(file, "w+") as f:
                 run = subprocess.call(["../ycsb-0.17.0/bin/ycsb",
                                       operation, database, run_param, additional_param, "../ycsb-0.17.0/" + workload_data,
@@ -259,8 +262,6 @@ class Slave:
         except FileNotFoundError:
             print("File does not Exist")
 
-
-
     def __get_all_benchmark_logs(self, data:str):
         script_dir = os.path.dirname(__file__)
         dirname = "run_logs"
@@ -284,7 +285,6 @@ class Slave:
                             break
                         progress.update(len(bytes_read))
                         self.socket.sendall(bytes_read.encode())
-
 
 
     @classmethod
