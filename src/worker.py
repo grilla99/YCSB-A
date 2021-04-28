@@ -180,7 +180,7 @@ class Slave:
             workload_data = data[4]  # e.g. workloads/workloada
             node = data[8]
             # e.g. if node = 0 and record count = 10: insert start = 0
-            # e.g. if node = 1 and record count = 10: = 1 * 10, insert start = 10
+            # e.g. if node = 1 and record cousnt = 10: = 1 * 10, insert start = 10
             # e.g. if node = 2 and record counst = 10: = 2 * 10, insert start = 20
             # Data[8] is the 'Node number' in relation to master
             # Data[7] is the number of records to insert
