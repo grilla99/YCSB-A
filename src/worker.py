@@ -196,8 +196,8 @@ class Slave:
 
 
             with open(file, "w+") as f:
-                run = subprocess.call(["../ycsb-0.17.0/bin/ycsb",
-                                      operation, database, run_param, additional_param, "../ycsb-0.17.0/" + workload_data,
+                run = subprocess.call(["../YCSB/ycsb-mongodb/bin/ycsb",
+                                      operation, database, run_param, additional_param, "../YCSB/ycsb-mongodb/" + workload_data,
                                       "-p", connection_string, "-p", insert_count, "-p", insert_start_string,
                                        "-p", "recordcount=" + record_count], stdout=f)
 

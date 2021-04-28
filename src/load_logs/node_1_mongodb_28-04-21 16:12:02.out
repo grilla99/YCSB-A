@@ -1,0 +1,8 @@
+YCSB Client 0.1
+Command line: -db com.yahoo.ycsb.db.MongoDbClient -s -P ../ycsb-0.17.0/workloads/workloada -p  mongodb.url=mongodb://172.31.26.152:27017,172.31.18.215:27017,172.31.27.18:27017/?replicaSet=rs0 -p insertcount=500 -p insertstart=500 -p recordcount=1000 -load
+java.lang.ClassNotFoundException: site.ycsb.workloads.CoreWorkload
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:606)
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:168)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:522)
+	at com.yahoo.ycsb.Client.main(Client.java:650)
+java -cp /Users/aaron/Desktop/Reading-CS/Year-3/YCSB-A/YCSB/ycsb-mongodb/core/target/core-0.1.4.jar:/Users/aaron/Desktop/Reading-CS/Year-3/YCSB-A/YCSB/ycsb-mongodb/mongodb/target/mongodb-binding-0.1.4.jar:/Users/aaron/Desktop/Reading-CS/Year-3/YCSB-A/YCSB/ycsb-mongodb/mongodb/target/archive-tmp/mongodb-binding-0.1.4.jar com.yahoo.ycsb.Client -db com.yahoo.ycsb.db.MongoDbClient -s -P ../ycsb-0.17.0/workloads/workloada -p  mongodb.url=mongodb://172.31.26.152:27017,172.31.18.215:27017,172.31.27.18:27017/?replicaSet=rs0 -p insertcount=500 -p insertstart=500 -p recordcount=1000 -load

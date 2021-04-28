@@ -1,4 +1,2 @@
-26-04-21 06:04:31 MainThread        INFO    - Master node started
-26-04-21 06:04:32 WaitingConnection INFO    - New worker connected : 127.0.0.1:50543.
-26-04-21 07:14:21 ListeningMessage  INFO    - Worker 127.0.0.1:50543 disconnected.
-26-04-21 07:14:21 MainThread        INFO    - Exiting master...
+28-04-21 16:14:10 MainThread        INFO    - Master node started
+28-04-21 16:14:23 WaitingConnection INFO    - New worker connected : 127.0.0.1:54178.
