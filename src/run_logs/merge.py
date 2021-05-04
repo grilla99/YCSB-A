@@ -1,5 +1,6 @@
 import os
 import re
+import pprint
 
 from UserDict import DictMixin
 
@@ -67,6 +68,10 @@ def merge():
                             else:
                                 stats[oc][mt] = transform(float(m2.group(3)))
     cns.sort()
+
+    print("\n \n ", type(stats))
+    pp = pprint.PrettyPrinter()
+    pp.pprint(stats)
 
     for key in stats:
         print(key, '->', stats[key])

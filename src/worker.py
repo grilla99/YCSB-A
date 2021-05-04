@@ -189,6 +189,7 @@ class Slave:
             insert_count = "insertcount=" + data[7]
             record_count = data[9]
             connection_string = 'mongodb.url=mongodb://172.31.26.152:27017,172.31.18.215:27017,172.31.27.18:27017/?replicaSet=rs0'
+            # connection_string = "mongodb.url=mongodb://127.0.0.1:27017"
 
             # If a file exists already, will write to it. If not it shall create a file and write the output
             # Of the YCSB log to it
@@ -217,6 +218,7 @@ class Slave:
                 additional_param = data[3]
                 workload_data = data[4]
                 connection_string = 'mongodb.url=mongodb://172.31.26.152:27017,172.31.18.215:27017,172.31.27.18:27017/?replicaSet=rs0'
+                # connection_string = "mongodb.url=mongodb://127.0.0.1:27017"
                 operation_count = data[7]
                 node = data[8]
 
@@ -237,7 +239,6 @@ class Slave:
             print(f"Node {self.address}:{self.port} does not have YCSB installed.")
             print("\n Disconnecting... ")
             self.__exit()
-
 
     #TODO: It's breaking on this after executing the function from insert file
     #TODO: File path being passed is incorrect and is using absolute file path, needs to be relative to executing
@@ -279,11 +280,11 @@ class Slave:
                     while True:
                         bytes_read = f.read(buffer_size)
                         print(bytes_read)
+                        progress.update(len(bytes_read))
+                        self.socket.sendall(bytes_read.encode())
                         if not bytes_read:
                             # File transmission done
                             break
-                        progress.update(len(bytes_read))
-                        self.socket.sendall(bytes_read.encode())
 
 
     @classmethod
