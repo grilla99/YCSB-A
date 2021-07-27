@@ -230,7 +230,7 @@ class Master:
                         self.__remove_worker(x)  # Remove the disconnected worker
                         x -= 1
             except ValueError:
-                print("No such database (needs to be changed)")
+                print("No such database")
         else:
             print(">> Bad format!")
 

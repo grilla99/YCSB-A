@@ -267,7 +267,6 @@ class Slave:
         dirname = "run_logs"
         abs_file_path = os.path.join(script_dir, dirname)
         buffer_size = 4096
-        separator = "<SEPARATOR>"
 
         for log_file in os.listdir(abs_file_path):
             if log_file.endswith(".out"):

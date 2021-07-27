@@ -3,12 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="05696ad1-d367-4a0d-9771-9f1539428cb5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FYP_Presentation.pptx" beforeDir="false" afterPath="$PROJECT_DIR$/FYP_Presentation.pptx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/master.log" beforeDir="false" afterPath="$PROJECT_DIR$/src/master.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/run_logs/merge.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/run_logs/merge.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/run_logs/node_0_mongodb_23-04-21 02:11:01.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/run_logs/node_1_mongodb_23-04-21 02:11:01.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/master.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/master.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/worker.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/worker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ycsb_script.sh" beforeDir="false" afterPath="$PROJECT_DIR$/src/ycsb_script.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,6 +136,8 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -253,7 +252,10 @@
       <workItem from="1619641253531" duration="40000" />
       <workItem from="1620026604317" duration="3153000" />
       <workItem from="1620122865841" duration="3714000" />
-      <workItem from="1620158904439" duration="939000" />
+      <workItem from="1620158904439" duration="2845000" />
+      <workItem from="1620243351389" duration="2498000" />
+      <workItem from="1620282033967" duration="1109000" />
+      <workItem from="1621523549956" duration="1141000" />
     </task>
     <servers />
   </component>

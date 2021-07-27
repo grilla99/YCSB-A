@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-FILE=./ycsb.config
+FILE=/ycsb.config
 # Re write this so that it checks if there's a YCSB directory and the executable file within.
 
 if [ -f "$FILE" ]; then
